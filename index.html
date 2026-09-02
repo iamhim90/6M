@@ -933,7 +933,7 @@ window.addEventListener('resize', setVH); function setVH(){document.documentElem
 /* ============ IMAGE INJECT ============ */
 document.querySelectorAll('img[data-key]').forEach(img=>{
   const k = img.getAttribute('data-key');
-  if(IMG && IMG[k]){ img.src = IMG[k]; img.loading='lazy'; }
+  if(IMG && IMG[k]){ img.src = IMG[k]; /* lazy removed */ }
 });
 
 /* ============ TOAST ============ */
