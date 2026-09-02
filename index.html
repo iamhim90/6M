@@ -40,6 +40,7 @@ h1,h2,h3{font-family:var(--serif); font-weight:600; margin:0; letter-spacing:0.0
 .display{font-family:var(--display); font-style:italic; font-weight:400;}
 p{margin:0; line-height:1.6;}
 button{font-family:var(--sans); border:none; background:none; cursor:pointer; -webkit-appearance:none;}
+button:focus-visible,[role="button"]:focus-visible{outline:3px solid var(--gold); outline-offset:4px;}
 img{max-width:100%; display:block;}
 
 /* grain texture */
@@ -133,7 +134,8 @@ img{max-width:100%; display:block;}
   border-radius:18px; overflow:hidden; box-shadow:0 30px 60px -24px rgba(74,42,53,0.35); margin:26px auto 0;
   max-width:340px; position:relative; background:var(--warm-white);
 }
-.photo-card img{width:100%; height:auto; min-height: 280px; object-fit: cover; display:block;}
+.photo-card img{width:100%; height:auto; min-height:280px; object-fit:cover; display:block; background:var(--blush);}
+.photo-card img.image-error{min-height:120px;}
 .photo-card.polaroid{background:var(--warm-white); padding:12px 12px 40px; border-radius:6px; box-shadow:0 24px 50px -20px rgba(74,42,53,0.4), 0 2px 6px rgba(0,0,0,0.06); transform:rotate(-2deg);}
 .photo-card.polaroid img{border-radius:2px;}
 .photo-caption{font-family:var(--serif); font-style:italic; font-size:0.9rem; color:var(--deep); text-align:center; margin-top:10px;}
@@ -344,7 +346,7 @@ input[type=range].rb-slider{width:min(300px,80vw); margin-top:10px; accent-color
 .slideshow-frame img.active{opacity:1;}
 .slide-counter{font-family:var(--serif);font-style:italic;color:var(--rose);font-size:0.85rem;margin-top:12px;opacity:0.75;text-align:center;}
 .slide-dots{display:flex;justify-content:center;gap:6px;margin-top:14px;flex-wrap:wrap;max-width:280px;margin-left:auto;margin-right:auto;}
-.slide-dot{width:6px;height:6px;border-radius:50%;background:var(--dusty);opacity:0.35;cursor:pointer;transition:all 0.3s ease;flex-shrink:0;}
+.slide-dot{width:12px;height:12px;padding:3px;border:3px solid transparent;background-clip:content-box;border-radius:50%;background-color:var(--dusty);opacity:0.35;cursor:pointer;transition:all 0.3s ease;flex-shrink:0;}
 .slide-dot.active{opacity:1;background:var(--rose);transform:scale(1.4);}
 .slide-nav{display:flex;justify-content:center;gap:20px;margin-top:18px;}
 .slide-btn{width:42px;height:42px;border-radius:50%;background:rgba(255,250,248,0.12);border:1.5px solid rgba(231,182,193,0.4);color:var(--blush);font-size:1.1rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s ease;backdrop-filter:blur(6px);}
@@ -690,7 +692,7 @@ input[type=range].rb-slider{width:min(300px,80vw); margin-top:10px; accent-color
 
 <!-- 15 SIX MONTHS COUNTER -->
 <section class="chapter" id="ch-15" data-title="Six Months">
-  <div class="chapter-num reveal">Chapter 16</div>
+  <div class="chapter-num reveal">Chapter 15</div>
   <h2 class="chapter-title reveal d1">Six Months</h2>
   <div class="counter-num reveal d2" id="counterMonths">6 Months</div>
   <div class="counter-days reveal d3" id="counterDays"></div>
@@ -789,7 +791,7 @@ And somehow, the thing I still look forward to most is simply seeing you again.<
 
 <!-- GIFT CHAPTER — The Bag of Love -->
 <section class="chapter" id="ch-gift" data-title="The Bag">
-  <div class="chapter-num reveal">Chapter 16</div>
+  <div class="chapter-num reveal">Chapter 17</div>
   <h2 class="chapter-title reveal d1 glow-heading">The Bag of Everything Good</h2>
   <p class="chapter-body reveal d2">You gave me something I didn't expect, and didn't deserve yet. A bag — full of everything that made me smile before I even opened it fully.</p>
   <div class="gift-grid reveal d3" id="giftGrid">
@@ -834,8 +836,8 @@ And somehow, the thing I still look forward to most is simply seeing you again.<
     <div class="slide-counter" id="slideCounter">1 / 23</div>
     <div class="slide-dots" id="slideDots"></div>
     <div class="slide-nav">
-      <button class="slide-btn" id="slidePrev">&#8592;</button>
-      <button class="slide-btn" id="slideNext">&#8594;</button>
+      <button class="slide-btn" id="slidePrev" aria-label="Previous photo">&#8592;</button>
+      <button class="slide-btn" id="slideNext" aria-label="Next photo">&#8594;</button>
     </div>
   </div>
   <p class="chapter-line reveal" style="color:var(--blush);margin-top:32px;">Every picture is a day I want to live again.</p>
@@ -852,6 +854,15 @@ And somehow, the thing I still look forward to most is simply seeing you again.<
 </section>
 
 </div><!-- /story -->
+
+<script>
+// Keep the letter and final action as the last story chapter, including after dynamic inserts.
+(function placeFinalChapterLast(){
+  const story = document.getElementById('story');
+  const finalChapter = document.getElementById('ch-final');
+  if(story && finalChapter) story.appendChild(finalChapter);
+})();
+</script>
 
 <!-- SHIRO WANDER -->
 <div id="shiro" title="Shiro">
@@ -873,7 +884,7 @@ And somehow, the thing I still look forward to most is simply seeing you again.<
     <div class="end-credits-line ec-tag" id="ec3">her birthday is coming. something's coming. ♡</div>
   </div></div>
 
-<button id="audio-toggle" title="sound">♪</button>
+<button id="audio-toggle" title="Toggle sound" aria-label="Toggle sound">♪</button>
 <audio id="bgAudio" loop preload="none"></audio>
 <div id="toast"></div>
 
@@ -931,9 +942,31 @@ const IMG = {
 window.addEventListener('resize', setVH); function setVH(){document.documentElement.style.setProperty('--vh', (window.innerHeight*0.01)+'px');} setVH();
 
 /* ============ IMAGE INJECT ============ */
+function setImageSource(img, key){
+  if(!img || !IMG || !IMG[key]) return Promise.reject(new Error('Missing image: '+key));
+  img.loading = 'lazy';
+  img.decoding = 'async';
+  if(img.dataset.loadedKey === key) return Promise.resolve(img);
+  return new Promise((resolve, reject)=>{
+    const finish = ()=>{ img.dataset.loadedKey=key; img.classList.remove('image-error'); resolve(img); };
+    const fail = ()=>{ img.classList.add('image-error'); reject(new Error('Could not load image: '+key)); };
+    img.addEventListener('load', finish, {once:true});
+    img.addEventListener('error', fail, {once:true});
+    img.src = IMG[key];
+    if(img.complete){ img.naturalWidth ? finish() : fail(); }
+  });
+}
+
+function revealPhoto(card){
+  const img = card && card.querySelector('img');
+  if(!card || !img) return;
+  const show = ()=>{ card.style.transition='opacity 0.8s ease'; card.style.opacity=1; };
+  if(img.complete && img.naturalWidth) show();
+  else img.addEventListener('load', show, {once:true});
+}
+
 document.querySelectorAll('img[data-key]').forEach(img=>{
-  const k = img.getAttribute('data-key');
-  if(IMG && IMG[k]){ img.src = IMG[k]; /* lazy removed */ }
+  setImageSource(img, img.dataset.key).catch(()=>{});
 });
 
 /* ============ TOAST ============ */
@@ -970,10 +1003,10 @@ function nextLoaderLine(){
   } else {
     loaderText.textContent = "Tap to begin.";
     loaderTap.classList.add('show');
-    loader.addEventListener('click', dismissLoader, {once:true});
   }
 }
 loaderText.style.opacity=1;
+loader.addEventListener('click', dismissLoader, {once:true});
 setTimeout(nextLoaderLine, 1200);
 function dismissLoader(){
   loader.classList.add('hide');
@@ -1041,14 +1074,22 @@ document.getElementById('openStoryBtn').addEventListener('click', function(e){
 function initRevealObserver(){
   const els = document.querySelectorAll('.reveal');
   const io = new IntersectionObserver((entries)=>{
-    entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); } });
+    entries.forEach(en=>{
+      if(en.isIntersecting){
+        en.target.classList.add('in');
+      }
+    });
   }, {threshold:0.1});
   els.forEach(el=>io.observe(el));
 
   // chapter-level init triggers
   const chapters = document.querySelectorAll('.chapter');
   const io2 = new IntersectionObserver((entries)=>{
-    entries.forEach(en=>{ if(en.isIntersecting){ initChapter(en.target.id); updateNav(en.target.id); } });
+    entries.forEach(en=>{
+      if(en.isIntersecting){
+        initChapter(en.target.id); updateNav(en.target.id);
+      }
+    });
   }, {threshold:0.1});
   chapters.forEach(c=>io2.observe(c));
 }
@@ -1059,7 +1100,9 @@ function initTimelineNav(){
   const chapters = document.querySelectorAll('.chapter');
   chapters.forEach(c=>{
     const dot = document.createElement('div'); dot.className='dot'; dot.dataset.target=c.id;
+      dot.setAttribute('role','button'); dot.tabIndex=0; dot.setAttribute('aria-label','Go to '+c.dataset.title);
     dot.addEventListener('click', ()=> c.scrollIntoView({behavior:'smooth'}));
+      dot.addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); c.scrollIntoView({behavior:'smooth'}); } });
     nav.appendChild(dot);
   });
 }
@@ -1116,8 +1159,7 @@ function initChess(){
       setTimeout(()=>{
         document.getElementById('chessLine').style.transition='opacity 1s ease';
         document.getElementById('chessLine').style.opacity=1;
-        document.getElementById('chessPhoto').style.transition='opacity 1s ease';
-        document.getElementById('chessPhoto').style.opacity=1;
+        revealPhoto(document.getElementById('chessPhoto'));
       },500);
     } else if(piece){
       taps++;
@@ -1166,8 +1208,7 @@ function initRiverfront(){
       waitText.textContent = stages[stages.length-1];
       document.getElementById('riverLine').style.transition='opacity 1s ease';
       document.getElementById('riverLine').style.opacity=1;
-      document.getElementById('riverPhoto').style.transition='opacity 1s ease';
-      document.getElementById('riverPhoto').style.opacity=1;
+      revealPhoto(document.getElementById('riverPhoto'));
     }
   }, 40);
 
@@ -1177,7 +1218,7 @@ function initRiverfront(){
     const l1=document.getElementById('mintLine1'), l2=document.getElementById('mintLine2'), l3=document.getElementById('mintLine3'), ph=document.getElementById('mintPhoto');
     if(mintTaps===1){ l1.style.transition='opacity 0.8s ease'; l1.style.opacity=1; }
     if(mintTaps===2){ l2.style.transition='opacity 0.8s ease'; l2.style.opacity=1; }
-    if(mintTaps===3){ l3.style.transition='opacity 0.8s ease'; l3.style.opacity=1; ph.style.transition='opacity 1s ease'; ph.style.opacity=1; toast('Yes, these are still important.'); }
+    if(mintTaps===3){ l3.style.transition='opacity 0.8s ease'; l3.style.opacity=1; revealPhoto(ph); toast('Yes, these are still important.'); }
   });
 }
 
@@ -1257,10 +1298,10 @@ function initJuice(){
   const img = photo.querySelector('img');
   const cap = document.getElementById('juiceCaption');
   document.getElementById('juiceCoconut').addEventListener('click', ()=>{
-    img.src = IMG['m12']; cap.textContent='nariyal paani, some random evening'; photo.style.opacity=1;
+    setImageSource(img, 'm12').then(()=>{ cap.textContent='nariyal paani, some random evening'; revealPhoto(photo); }).catch(()=>toast('That memory could not be loaded.'));
   });
   document.getElementById('juiceGanna').addEventListener('click', ()=>{
-    img.src = IMG['m13']; cap.textContent='ganne ka juice, another one'; photo.style.opacity=1;
+    setImageSource(img, 'm13').then(()=>{ cap.textContent='ganne ka juice, another one'; revealPhoto(photo); }).catch(()=>toast('That memory could not be loaded.'));
   });
 }
 
@@ -1415,27 +1456,35 @@ document.getElementById('replayBtn').addEventListener('click', ()=>{
   // Build img elements
   allKeys.forEach((k,i)=>{
     const img = document.createElement('img');
-    img.src = (IMG && IMG[k]) ? IMG[k] : '';
+    img.dataset.key = k;
     img.alt = 'Us';
+    img.loading = i < 2 ? 'eager' : 'lazy';
     if(i===0) img.classList.add('active');
     frame.appendChild(img);
 
     const dot = document.createElement('div');
     dot.className = 'slide-dot' + (i===0 ? ' active' : '');
+    dot.setAttribute('role','button'); dot.tabIndex=0; dot.setAttribute('aria-label','Show photo '+(i+1));
     dot.addEventListener('click',()=>goTo(i));
+    dot.addEventListener('keydown',e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); goTo(i); } });
     dotsWrap.appendChild(dot);
   });
 
   function goTo(n){
     const imgs = frame.querySelectorAll('img');
     const dots = dotsWrap.querySelectorAll('.slide-dot');
-    imgs[current].classList.remove('active');
-    dots[current].classList.remove('active');
-    current = (n + allKeys.length) % allKeys.length;
-    imgs[current].classList.add('active');
-    dots[current].classList.add('active');
-    counter.textContent = (current+1) + ' / ' + allKeys.length;
-    resetAuto();
+    const next = (n + allKeys.length) % allKeys.length;
+    const nextImage = setImageSource(imgs[next], allKeys[next]);
+    setImageSource(imgs[(next+1) % allKeys.length], allKeys[(next+1) % allKeys.length]).catch(()=>{});
+    nextImage.then(()=>{
+      imgs[current].classList.remove('active');
+      dots[current].classList.remove('active');
+      current = next;
+      imgs[current].classList.add('active');
+      dots[current].classList.add('active');
+      counter.textContent = (current+1) + ' / ' + allKeys.length;
+      resetAuto();
+    }).catch(()=>toast('This photo could not be loaded.'));
   }
 
   function resetAuto(){
@@ -1459,7 +1508,11 @@ document.getElementById('replayBtn').addEventListener('click', ()=>{
     entries.forEach(e=>{ if(e.isIntersecting){ resetAuto(); } else { clearInterval(autoTimer); } });
   },{threshold:0.1});
   const sec = document.getElementById('ch-gallery');
-  if(sec) observer.observe(sec);
+  if(sec){
+    observer.observe(sec);
+    setImageSource(frame.querySelector('img'), allKeys[0]).catch(()=>{});
+    setImageSource(frame.querySelectorAll('img')[1], allKeys[1]).catch(()=>{});
+  }
 })();
 
 /* ============ MEMORY STRIP ============ */
@@ -1470,7 +1523,9 @@ document.getElementById('replayBtn').addEventListener('click', ()=>{
   keys.forEach(k=>{
     const div = document.createElement('div'); div.className='mem-pic';
     const img = document.createElement('img');
-    img.src = (IMG && IMG[k]) ? IMG[k] : '';
+    img.dataset.key = k;
+    setImageSource(img, k).catch(()=>{});
+    img.loading = 'lazy';
     img.alt='';
     div.appendChild(img);
     strip.appendChild(div);
@@ -1483,6 +1538,7 @@ document.getElementById('lastThingBtn').removeEventListener('click', _origLastTh
 document.getElementById('lastThingBtn').addEventListener('click', ()=>{
   const overlay = document.getElementById('last-thing');
   overlay.classList.add('show');
+  document.body.style.overflow='hidden';
   const orbit = document.getElementById('lastOrbit');
   orbit.innerHTML='';
   // Stars
@@ -1516,6 +1572,12 @@ document.getElementById('lastThingBtn').addEventListener('click', ()=>{
     },900);
   },3600);
   setTimeout(()=>document.getElementById('replayBtn').classList.add('in'), 6200);
+});
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape' && document.getElementById('last-thing').classList.contains('show')){
+    document.getElementById('last-thing').classList.remove('show');
+    document.body.style.overflow='';
+  }
 });
 
 /* ============ PERFECT 7 FLIP CARDS ============ */
