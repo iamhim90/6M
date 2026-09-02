@@ -104,6 +104,8 @@ img{max-width:100%; display:block;}
 .intro-kicker{font-size:0.72rem; letter-spacing:0.35em; text-transform:uppercase; color:var(--deep); opacity:0.75; margin-bottom:18px; z-index:1;}
 .intro-title{font-size:clamp(2.4rem,9vw,3.6rem); z-index:1; line-height:1.15;}
 .intro-sub{font-family:var(--serif); font-style:italic; color:var(--dusty); font-size:clamp(1rem,3.4vw,1.25rem); margin-top:10px; z-index:1;}
+.intro-photo{width:112px;height:112px;margin:24px auto 0;border-radius:50%;padding:5px;background:rgba(255,250,248,0.7);box-shadow:0 18px 40px -18px rgba(74,42,53,0.45);z-index:1;transform:rotate(4deg);}
+.intro-photo img{width:100%;height:100%;border-radius:50%;object-fit:cover;}
 .open-btn{
   margin-top:46px; z-index:1; padding:17px 40px; border-radius:50px; font-size:1rem; letter-spacing:0.03em;
   background:linear-gradient(135deg,var(--deep),var(--red-accent)); color:var(--warm-white);
@@ -118,6 +120,11 @@ img{max-width:100%; display:block;}
 /* ============ MAIN WRAP ============ */
 #story{display:none;}
 #story.active{display:block;}
+#story-progress{position:fixed;top:0;left:0;right:0;height:4px;z-index:70;background:rgba(231,182,193,0.25);opacity:0;transition:opacity 0.5s ease;}
+#story-progress.active{opacity:1;}
+#story-progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--deep),var(--red-accent));transform-origin:left;transition:width 0.25s ease;}
+#story-progress-label{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:70;font-size:0.68rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--deep);opacity:0;transition:opacity 0.5s ease;pointer-events:none;}
+#story-progress-label.active{opacity:0.75;}
 
 .chapter{
   min-height:100svh; min-height:calc(var(--vh, 1vh) * 100); padding:90px 22px; display:flex; flex-direction:column; justify-content:center; align-items:center;
@@ -127,6 +134,12 @@ img{max-width:100%; display:block;}
 .chapter-title{font-size:clamp(1.9rem,7vw,2.7rem); margin-bottom:18px;}
 .chapter-body{font-size:1.02rem; color:var(--ink); opacity:0.85; max-width:480px; margin:0 auto;}
 .chapter-line{font-family:var(--serif); font-style:italic; font-size:clamp(1.2rem,4.6vw,1.55rem); color:var(--deep); margin:14px 0;}
+#ch-01{background:radial-gradient(120% 80% at 50% 0%,#f2e2d6 0%,var(--warm-white) 68%);}
+#ch-03{background:linear-gradient(160deg,var(--warm-white),#f8e8e6);}
+#ch-04{background:radial-gradient(100% 90% at 50% 20%,#f4e0d8 0%,var(--warm-white) 72%);}
+#ch-08{background:linear-gradient(160deg,#fffaf8 0%,#f0e5d8 100%);}
+#ch-09{background:linear-gradient(160deg,#fffaf8 0%,#e8d9d4 100%);}
+#ch-10{background:linear-gradient(160deg,#fffaf8 0%,#f4e2cf 100%);}
 
 .reveal{opacity:0; transform:translateY(28px); transition:opacity 1s cubic-bezier(.22,.9,.28,1), transform 1s cubic-bezier(.22,.9,.28,1); will-change: transform, opacity;}
 .reveal.in{opacity:1; transform:translateY(0);}
@@ -139,6 +152,7 @@ img{max-width:100%; display:block;}
 }
 .photo-card img{width:100%; height:auto; min-height:280px; object-fit:cover; display:block; background:var(--blush);}
 .photo-card img.image-error{min-height:120px;}
+.photo-card img,.final-photo img,.mem-pic img{cursor:zoom-in;}
 .photo-card.polaroid{background:var(--warm-white); padding:12px 12px 40px; border-radius:6px; box-shadow:0 24px 50px -20px rgba(74,42,53,0.4), 0 2px 6px rgba(0,0,0,0.06); transform:rotate(-2deg);}
 .photo-card.polaroid img{border-radius:2px;}
 .photo-caption{font-family:var(--serif); font-style:italic; font-size:0.9rem; color:var(--deep); text-align:center; margin-top:10px;}
@@ -279,6 +293,7 @@ input[type=range].rb-slider{width:min(300px,80vw); margin-top:10px; accent-color
 /* ---- LAST THING OVERLAY ---- */
 #last-thing{position:fixed; inset:0; z-index:9998; background:radial-gradient(120% 100% at 50% 20%, #3a2530 0%, #2a1c24 100%); display:none; align-items:center; justify-content:center; flex-direction:column; text-align:center; padding:30px; overflow:hidden;}
 #last-thing.show{display:flex;}
+#last-thing.show + #audio-toggle{display:none;}
 #last-thing .star{position:absolute; background:var(--blush); border-radius:50%; opacity:0.6; animation:twinkle 3s ease-in-out infinite;}
 @keyframes twinkle{0%,100%{opacity:0.15;}50%{opacity:0.8;}}
 .last-orbit{position:absolute; inset:0; pointer-events:none;}
@@ -381,6 +396,13 @@ input[type=range].rb-slider{width:min(300px,80vw); margin-top:10px; accent-color
 /* ---- ENHANCED LAST THING ---- */
 .orbit-photo{width:80px;border-radius:10px;box-shadow:0 16px 36px rgba(0,0,0,0.55);}
 
+/* ---- FULLSCREEN PHOTO VIEWER ---- */
+#lightbox{position:fixed;inset:0;z-index:10001;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(28,14,20,0.94);opacity:0;visibility:hidden;pointer-events:none;transition:opacity 0.35s ease,visibility 0.35s ease;}
+#lightbox.show{opacity:1;visibility:visible;pointer-events:auto;}
+#lightbox img{max-width:min(92vw,900px);max-height:82vh;object-fit:contain;border-radius:8px;box-shadow:0 24px 70px rgba(0,0,0,0.5);}
+#lightbox-close{position:absolute;top:max(18px,env(safe-area-inset-top));right:max(18px,env(safe-area-inset-right));width:48px;height:48px;border:1px solid rgba(246,217,222,0.45);border-radius:50%;color:var(--blush);font-size:1.5rem;}
+#lightbox-caption{position:absolute;bottom:max(24px,env(safe-area-inset-bottom));left:24px;right:24px;text-align:center;color:var(--rose);font-family:var(--serif);font-style:italic;font-size:1rem;}
+
 /* ---- RESPONSIVE ---- */
 @media(min-width:900px){
   .gift-grid{max-width:560px;}
@@ -450,6 +472,7 @@ input[type=range].rb-slider{width:min(300px,80vw); margin-top:10px; accent-color
   .bokeh-layer{display:none;}
   .grain{opacity:0.02;}
   .slide-btn{width:48px;height:48px;}
+  #story-progress-label{top:10px;}
 }
 @media(prefers-reduced-motion:reduce){
   *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
@@ -491,6 +514,7 @@ input[type=range].rb-slider{width:min(300px,80vw); margin-top:10px; accent-color
   <div class="intro-kicker">for Khushi</div>
   <h1 class="intro-title">a little story<br><span class="display">about us</span></h1>
   <p class="intro-sub">six months, and a few of the small things</p>
+  <div class="intro-photo"><img src="" data-key="m20" alt="A favorite memory of us"></div>
   <button class="open-btn" id="openStoryBtn">Open our story ♡</button>
   <div class="intro-hint">tap to begin</div>
 </div>
@@ -498,6 +522,8 @@ input[type=range].rb-slider{width:min(300px,80vw); margin-top:10px; accent-color
 <!-- MAIN STORY -->
 <div id="story">
 <div id="timeline-nav"></div>
+<div id="story-progress" aria-hidden="true"><div id="story-progress-bar"></div></div>
+<div id="story-progress-label" aria-live="polite"></div>
 
 <!-- 01 CHESS -->
 <section class="chapter" id="ch-01" data-title="Chess">
@@ -876,6 +902,12 @@ And somehow, the thing I still look forward to most is simply seeing you again.<
 })();
 </script>
 
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button id="lightbox-close" aria-label="Close photo viewer">&#215;</button>
+  <img id="lightbox-image" src="" alt="">
+  <div id="lightbox-caption"></div>
+</div>
+
 <!-- SHIRO WANDER -->
 <div id="shiro" title="Shiro">
   <svg viewBox="0 0 64 64"><ellipse cx="32" cy="40" rx="20" ry="14" fill="#e8c9a0"/><circle cx="18" cy="26" r="12" fill="#e8c9a0"/><circle cx="14" cy="16" r="4" fill="#e8c9a0"/><circle cx="24" cy="16" r="4" fill="#e8c9a0"/><circle cx="14" cy="27" r="1.6" fill="#4a2a35"/><circle cx="22" cy="27" r="1.6" fill="#4a2a35"/><ellipse cx="18" cy="32" rx="3" ry="2" fill="#4a2a35"/></svg>
@@ -977,9 +1009,49 @@ function revealPhoto(card){
   else img.addEventListener('load', show, {once:true});
 }
 
+function initStoryProgress(){
+  const bar=document.getElementById('story-progress-bar'), label=document.getElementById('story-progress-label');
+  const progress=document.getElementById('story-progress'), chapters=[...document.querySelectorAll('#story > .chapter')];
+  if(!bar || !label || !progress || !chapters.length) return;
+  progress.classList.add('active'); label.classList.add('active');
+  let pending=false;
+  function update(){
+    pending=false;
+    const max=Math.max(1,document.documentElement.scrollHeight-window.innerHeight);
+    bar.style.width=Math.min(100,Math.max(0,window.scrollY/max*100))+'%';
+    const current=chapters.reduce((best,chapter)=>{
+      const distance=Math.abs(chapter.getBoundingClientRect().top-window.innerHeight*.35);
+      return distance<best.distance ? {chapter,distance} : best;
+    },{chapter:chapters[0],distance:Infinity}).chapter;
+    label.textContent=current.dataset.title || '';
+  }
+  function requestUpdate(){ if(!pending){ pending=true; requestAnimationFrame(update); } }
+  window.addEventListener('scroll',requestUpdate,{passive:true});
+  window.addEventListener('resize',requestUpdate,{passive:true});
+  update();
+}
+
+function initLightbox(){
+  const lightbox=document.getElementById('lightbox'), image=document.getElementById('lightbox-image');
+  const caption=document.getElementById('lightbox-caption'), close=document.getElementById('lightbox-close');
+  if(!lightbox || !image || !caption || !close) return;
+  function closeViewer(){ lightbox.classList.remove('show'); document.body.style.overflow=''; image.src=''; }
+  document.addEventListener('click', e=>{
+    const source=e.target.closest('img[data-key]');
+    if(!source || !source.naturalWidth) return;
+    e.preventDefault(); image.src=source.currentSrc || source.src; image.alt=source.alt || 'Memory';
+    caption.textContent=source.closest('.photo-card')?.querySelector('.photo-caption')?.textContent || '';
+    lightbox.classList.add('show'); document.body.style.overflow='hidden'; close.focus();
+  });
+  close.addEventListener('click', closeViewer);
+  lightbox.addEventListener('click', e=>{ if(e.target===lightbox) closeViewer(); });
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape' && lightbox.classList.contains('show')) closeViewer(); });
+}
+
 document.querySelectorAll('img[data-key]').forEach(img=>{
   setImageSource(img, img.dataset.key).catch(()=>{});
 });
+initLightbox();
 
 /* ============ TOAST ============ */
 function toast(msg, ms=2600){
@@ -1075,6 +1147,7 @@ document.getElementById('openStoryBtn').addEventListener('click', function(e){
       story.classList.add('active');
       initTimelineNav();
       initRevealObserver();
+      initStoryProgress();
       window.scrollTo(0,0);
       document.getElementById('shiro').classList.add('visible');
       startShiroWander();
